@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Text-to-Column Web App</title>
+    <style>
+      .table {
+        width: 100%;
+        margin-bottom: 1rem;
+        color: #212529;
+        border-collapse: collapse;
+      }
+      .table-bordered {
+        border: 1px solid #dee2e6;
+      }
+      .table-striped tbody tr:nth-of-type(odd) {
+        background-color: rgba(0, 0, 0, 0.05);
+      }
+      .table-bordered td, .table-bordered th {
+        padding: 0.75rem;
+        vertical-align: top;
+        border: 1px solid #dee2e6;
+      }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      function previewFile() {
+        var form_data = new FormData();
+        form_data.append('excel_file', $('input[type=file]')[0].files[0]);
+
+        $.ajax({
+          url: '/preview',
+          type: 'POST',
+          data: form_data,
+          contentType: false,
+          cache: false,
+          processData: false,
+          success: function(response) {
+            $('#preview').html(response.html_table);
+          }
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Text-to-Column Web App</h1>
+    <form action="" method="post" enctype="multipart/form-data">
+      {{ form.csrf_token }}
+      <p>Excel File: <input type="file" name="excel_file" onchange="previewFile()"></p>
+      <p>Column Name: <input type="text" name="column_name"></p>
+      <p>Delimiter: <input type="text" name="delimiter"></p>
+      <p><input type="submit" value="Submit"></p>
+    </form>
+    <div id="preview"></div>
+  </body>
+</html>
